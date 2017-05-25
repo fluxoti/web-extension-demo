@@ -13,45 +13,22 @@
     <!--You need Jquery 1.x(not tested with 2.x) and the janus library-->
     <script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin="anonymous"></script>
     <script src="https://janus.conf.meetecho.com/janus.js"></script>
-    <script type="text/javascript" src="https://janus.conf.meetecho.com/adapter.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/webrtc-adapter/3.1.5/adapter.min.js" ></script>
     <!--And here the magic happens-->
     <script src="main.js"></script>
 </head>
 
 <body>
-    <div class="container">
-        <div class="row">
-            <div class="col-md-6 col-md-offset-3">
-                <h1>3cplus V2 Web Extension Demo</h1>
-
-                <div class="container" id="form">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="col-md-6 container" id="login">
-                                <div class="input-group margin-bottom-sm">
-                                    <span class="input-group-addon"><i class="fa fa-cloud-upload fa-fw"></i></span>
-                                    <input class="form-control" type="text" placeholder="SIP Proxy Server (e.g., sip:host:port)" autocomplete="off" id="server"></input>
-                                </div>
-                                <div class="input-group margin-bottom-sm">
-                                    <span class="input-group-addon"><i class="fa fa-user fa-fw"></i></span>
-                                    <input class="form-control" type="text" placeholder="SIP Identity (e.g., sip:goofy@example.com)" autocomplete="off" id="username"></input>
-                                </div>
-                                <div class="input-group margin-bottom-sm">
-                                    <span class="input-group-addon"><i class="fa fa-user fa-fw"></i></span>
-                                    <input class="form-control" type="text" placeholder="Display name (e.g., Alice)" autocomplete="off" id="displayname"></input>
-                                </div>
-                                <div class="input-group margin-bottom-sm">
-                                    <span class="input-group-addon"><i class="fa fa-key fa-fw"></i></span>
-                                    <input class="form-control" type="password" placeholder="Secret (e.g., mysupersecretpassword)" autocomplete="off" id="password"></input>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
+<div class="container">
+    <div class="row">
+        <div class="col-md-6 col-md-offset-3">
+            <h1>3cplus V2 Web Extension Demo</h1>
+            <div id="info"></div>
+            <!--Audio webrtc-->
+            <audio id="audio"  autoplay/>
         </div>
     </div>
+</div>
 </body>
 
 </html>
