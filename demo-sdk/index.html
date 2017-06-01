@@ -13,7 +13,7 @@
 <!--You need socket.io.js from your node js server -->
 <script src="https://localhost:3000/socket.io/socket.io.js"></script>
 
-<!--You need Jquery 1.x(not tested with 2.x) and the janus and adapter library-->
+<!--You need Jquery 1.x(not tested with 2.x) and the janus, adapter library-->
 <script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin="anonymous"></script>
 <script src="https://janus.conf.meetecho.com/janus.js"></script>
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/webrtc-adapter/3.1.5/adapter.min.js" ></script>
@@ -22,7 +22,7 @@
 <script src="janus-webrtc.js"></script>
 
 <body>
-<nav class="nav">
+<nav class="nav has-shadow">
     <div class="nav-left">
         <a class="nav-item">
             demo-sdk
@@ -31,11 +31,11 @@
     <div class="nav-right nav-menu">
     </div>
 </nav>
-<div class="content is-medium" style="margin: 20px">
+<div class="content is-medium" id="data" style="margin: 20px">
 
     <div class="columns">
 
-        <div class="column is-one-third">
+        <div class="column is-one-third is-offset-4" >
             <label class="label">server</label>
             <div class="field">
                 <p class="control has-icons-left">
@@ -84,9 +84,92 @@
                         Register
                     </button>
                 </p>
+            </div>
+        </div>
     </div>
-    </div>
-        <div class="column is-two-third" style="margin: 20px">
+</div>
+
+<div class="content is-medium" id="demo-sdk" style="margin: 20px; display: none">
+
+    <div class="columns">
+        <div class="column is-one-third">
+            <div class="column">
+                <label class="label">web extension</label>
+                <a class="button is-danger" onclick="mute()">
+                    <span class="icon">
+                      <i class="fa fa-microphone-slash"></i>
+                    </span>
+                    <span>Mute</span>
+                </a>
+                <a class="button is-danger" onclick="unmute()">
+                                        <span class="icon">
+                      <i class="fa fa-microphone"></i>
+                    </span>
+                    <span>Unmute</span>
+                </a>
+            </div>
+            <div class="column">
+                <label class="label">agent</label>
+                <a class="button is-success controls" data-function="login">Login</a>
+                <a class="button is-danger controls" data-function="logout">Logout</a>
+            </div>
+
+            <div class="column">
+                <label class="label">call connected</label>
+                <div class="field has-addons">
+                    <p class="control">
+                        <a class="button is-danger controls" data-function="hangup">
+                            <span>Hangup call</span>
+                        </a>
+
+                    </p>
+                    <p class="control">
+                        <input class="input" type="text" id="call_id" placeholder="call id">
+                    </p>
+                </div>
+
+                <div class="field has-addons">
+                    <p class="control">
+                        <a class="button is-info controls" data-function="qualify">
+                            <span>Qualify</span>
+                        </a>
+
+                    </p>
+                    <p class="control">
+                        <input class="input" type="text" id="qualification" placeholder="Qualification id">
+                    </p>
+                    <p class="control">
+                        <input class="input" type="text" id="qualification_call_id" placeholder="call id">
+                    </p>
+                </div>
+            </div>
+
+            <div class="column">
+                <label class="label">manual call</label>
+                <p class="field">
+                    <a class="button is-info controls" data-function="enter-manual-mode">Enter Manual Mode</a>
+                </p>
+
+                <div class="field has-addons">
+                    <p class="control">
+                        <a class="button is-success controls" data-function="start-manual-call">
+                            <span>Start Manual call</span>
+                        </a>
+                    </p>
+                    <p class="control">
+                        <input class="input" type="text"  id="phone" placeholder="phone number">
+                    </p>
+                </div>
+                <p class="field">
+                    <a class="button is-danger controls" data-function="exit-manual-mode">Exit Manual Mode</a>
+                </p>
+            </div>
+
+
+
+        </div>
+
+        <div class="column is-two-third">
             <div class="card">
                 <header class="card-header">
                     <p class="card-header-title">
@@ -112,11 +195,14 @@
                 </div>
             </div>
         </div>
+    </div>
 </div>
-</div>
+
+
 
 <!-- This is required to receive the audio-->
 <audio id="audio" ref="audio" autoplay></audio>
+
 </body>
 
 <script type="text/javascript">
@@ -125,27 +211,59 @@
         transports: ['websocket']
     })
 
+    let count_events = 0
+
     $('#register').click(function() {
-        let options = {
+        let options_register = {
             server: $('#janus_server').val(),
             host: $('#3cplus_host').val(),
             agent_id: $('#telephony_id').val(),
             agent_password: $('#password').val(),
         }
 
-        // Register web extension, This function is available in janus-webrtc.js
-        addAgent(options)
+        let options_agent = {
+            telephony_id: $('#telephony_id').val(),
+            token: $('#token').val(),
+        }
 
-        // Send telephony_id to main.js server to adduser
-        socket.emit('adduser', $('#telephony_id').val())
+        // Register web extension, This function is available in janus-webrtc.js
+        addAgent(options_register)
+
+        // Send telephony_id and token to main.js server to adduser
+        socket.emit('adduser', options_agent)
+
+        $('#data').hide()
+        $('#demo-sdk').show()
     })
 
     socket.on('event', function(data) {
-        $('#events').html('<pre class="prettyprint">' + JSON.stringify(data, null, 4) + '</pre>')
+        if (count_events === 0){
+            $('#events').html('')
+        }
+        $('#events').append('<pre class="prettyprint" style="font-size: 0.5em">' + JSON.stringify(data, null, 4) + '</pre>')
         console.log(data)
+        count_events++
     })
 
+    $('.controls').click(function() {
+        let data = {
+            type: $(this).attr('data-function')
+        }
+        switch(data.type) {
+            case 'hangup':
+                data.call_id = $('#call_id').val()
+                break;
+            case 'qualify':
+                data.qualification_id = $('#qualification').val()
+                data.call_id = $('#qualification_call_id').val()
+                break;
+            case 'start-manual-call':
+                data.phone = $('#phone').val()
+                break;
+        }
 
+        socket.emit('control', data)
+    })
 </script>
 
 </html>
