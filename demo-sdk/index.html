@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>demo-sdk</title>
+</head>
+
+<!--This is not needed for the demo only css-->
+<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.4.2/css/bulma.css">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+<script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>
+
+<!--You need socket.io.js from your node js server -->
+<script src="https://localhost:3000/socket.io/socket.io.js"></script>
+
+<!--You need Jquery 1.x(not tested with 2.x) and the janus and adapter library-->
+<script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin="anonymous"></script>
+<script src="https://janus.conf.meetecho.com/janus.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/webrtc-adapter/3.1.5/adapter.min.js" ></script>
+
+<!--script for webrtc extension-->
+<script src="janus-webrtc.js"></script>
+
+<body>
+<nav class="nav">
+    <div class="nav-left">
+        <a class="nav-item">
+            demo-sdk
+        </a>
+    </div>
+    <div class="nav-right nav-menu">
+    </div>
+</nav>
+<div class="content is-medium" style="margin: 20px">
+
+    <div class="columns">
+
+        <div class="column is-one-third">
+            <label class="label">server</label>
+            <div class="field">
+                <p class="control has-icons-left">
+                    <input class="input" type="text" id="janus_server" placeholder="janus server (e.g., https://example.com:9089/janus)">
+                    <span class="icon is-small is-left">
+                  <i class="fa fa-server"></i>
+                </span>
+                </p>
+            </div>
+            <div class="field">
+                <p class="control has-icons-left">
+                    <input class="input" type="text" id="3cplus_host" placeholder="3cplus host (e.g., company.example.com)">
+                    <span class="icon is-small is-left">
+                  <i class="fa fa-tasks"></i>
+                </span>
+                </p>
+            </div>
+            <label class="label">Agent</label>
+            <div class="field">
+                <p class="control has-icons-left">
+                    <input class="input" type="text" id="token" placeholder="API token">
+                    <span class="icon is-small is-left">
+                  <i class="fa fa-vcard"></i>
+                </span>
+                </p>
+            </div>
+            <div class="field">
+                <p class="control has-icons-left">
+                    <input class="input" type="text" id="telephony_id" placeholder="Telephony id">
+                    <span class="icon is-small is-left">
+                  <i class="fa fa-phone"></i>
+                </span>
+                </p>
+            </div>
+            <div class="field">
+                <p class="control has-icons-left">
+                    <input class="input" type="text" id="password" placeholder="Password">
+                    <span class="icon is-small is-left">
+                  <i class="fa fa-lock"></i>
+                </span>
+                </p>
+            </div>
+            <div class="field">
+                <p class="control">
+                    <button class="button is-success" id="register">
+                        Register
+                    </button>
+                </p>
+    </div>
+    </div>
+        <div class="column is-two-third" style="margin: 20px">
+            <div class="card">
+                <header class="card-header">
+                    <p class="card-header-title">
+                        Web extension status
+                    </p>
+                </header>
+                <div class="card-content">
+                    <div class="content">
+                        <div id="info">waiting to register.</div>
+                    </div>
+                </div>
+            </div>
+            <div class="card">
+                <header class="card-header">
+                    <p class="card-header-title">
+                        Events
+                    </p>
+                </header>
+                <div class="card-content">
+                    <div class="content">
+                        <div id="events">No event received</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+</div>
+</div>
+
+<!-- This is required to receive the audio-->
+<audio id="audio" ref="audio" autoplay></audio>
+</body>
+
+<script type="text/javascript">
+
+    let socket = io.connect('https://localhost:3000', {
+        transports: ['websocket']
+    })
+
+    $('#register').click(function() {
+        let options = {
+            server: $('#janus_server').val(),
+            host: $('#3cplus_host').val(),
+            agent_id: $('#telephony_id').val(),
+            agent_password: $('#password').val(),
+        }
+
+        // Register web extension, This function is available in janus-webrtc.js
+        addAgent(options)
+
+        // Send telephony_id to main.js server to adduser
+        socket.emit('adduser', $('#telephony_id').val())
+    })
+
+    socket.on('event', function(data) {
+        $('#events').html('<pre class="prettyprint">' + JSON.stringify(data, null, 4) + '</pre>')
+        console.log(data)
+    })
+
+
+</script>
+
+</html>
