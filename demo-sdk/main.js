@@ -36,25 +36,26 @@ app.post('/webhooks', function(req, res) {
     res.json({status: 'ok'})
 });
 
+// socket.io to receive agent connect/disconnect
 io.sockets.on('connection', function(client) {
 
-    client.on('adduser', function(agent_id) {
+    client.on('adduser', function(data) {
 
         if (DEBUG)
-            console.log("Add agent id: " + agent_id)
+            console.log("Add agent: " + data)
 
-        agents[agent_id] = agent_id;
-        client.agent = agent_id;
-        client.join(agent_id);
+        agents[data.telephony_id] = data;
+        client.agent = data;
+        client.join(data.telephony_id);
     })
 
     client.on('disconnect', function() {
 
         if (DEBUG)
-            console.log("Disconnected: ", client.agent)
+            console.log("Disconnected: ", client.agent.telephony_id)
 
-        client.leave(client.agent);
-        delete agents[client.agent];
+        client.leave(client.agent.telephony_id);
+        delete agents[client.agent.telephony_id];
     })
 
 })
