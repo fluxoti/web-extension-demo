@@ -240,7 +240,8 @@
         if (count_events === 0){
             $('#events').html('')
         }
-        $('#events').append('<pre class="prettyprint" style="font-size: 0.5em">' + JSON.stringify(data, null, 4) + '</pre>')
+
+        $('#events').prepend('<pre class="prettyprint" style="font-size: 0.5em">' + JSON.stringify(data, null, 4) + '</pre>')
         console.log(data)
         count_events++
     })

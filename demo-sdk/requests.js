@@ -158,7 +158,6 @@ const process = function (data, agent, callback) {
             return callback(true)
         })
     }
-
 }
 
 exports.process = process
