@@ -241,7 +241,11 @@
             $('#events').html('')
         }
 
-        $('#events').prepend('<pre class="prettyprint" style="font-size: 0.5em">' + JSON.stringify(data, null, 4) + '</pre>')
+        const time = new Date();
+        let label = time.getHours() + ":" + time.getMinutes() + ":" + time.getSeconds()
+
+        $('#events').prepend('<label class="label">' + label + '</label>' +
+            '<pre class="prettyprint" style="font-size: 0.5em">' + JSON.stringify(data, null, 4) + '</pre>')
         console.log(data)
         count_events++
     })

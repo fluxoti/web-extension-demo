@@ -2,7 +2,8 @@ const request = require('request')
 
 const process = function (data, agent, callback) {
 
-    const api_url = 'http://172.18.0.13:8080/api/v1/'
+    // API url
+    const api_url = 'http://example.com/api/v1/'
 
     switch (data.type) {
         case 'login':
@@ -42,6 +43,7 @@ const process = function (data, agent, callback) {
         console.log(JSON.stringify(options))
 
         request(options, function (err, response, body) {
+            console.log(JSON.stringify(body))
             if (err) {
                 return callback(false)
             }
@@ -60,6 +62,7 @@ const process = function (data, agent, callback) {
 
         console.log(JSON.stringify(options))
         request(options, function (err, response, body) {
+            console.log(JSON.stringify(body))
             if (err) {
                 return callback(false)
             }
@@ -78,6 +81,7 @@ const process = function (data, agent, callback) {
 
         console.log(JSON.stringify(options))
         request(options, function (err, response, body) {
+            console.log(JSON.stringify(body))
             if (err) {
                 return callback(false)
             }
@@ -97,6 +101,7 @@ const process = function (data, agent, callback) {
 
         console.log(JSON.stringify(options))
         request(options, function (err, response, body) {
+            console.log(JSON.stringify(body))
             if (err) {
                 return callback(false)
             }
@@ -115,6 +120,7 @@ const process = function (data, agent, callback) {
 
         console.log(JSON.stringify(options))
         request(options, function (err, response, body) {
+            console.log(JSON.stringify(body))
             if (err) {
                 return callback(false)
             }
@@ -134,6 +140,7 @@ const process = function (data, agent, callback) {
 
         console.log(JSON.stringify(options))
         request(options, function (err, response, body) {
+            console.log(JSON.stringify(body))
             if (err) {
                 return callback(false)
             }
@@ -152,6 +159,7 @@ const process = function (data, agent, callback) {
 
         console.log(JSON.stringify(options))
         request(options, function (err, response, body) {
+            console.log(JSON.stringify(body))
             if (err) {
                 return callback(false)
             }

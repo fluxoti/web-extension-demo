@@ -31,7 +31,7 @@ app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
 
 let agents = {}
 
-// url to receive webhooks from 3cplus and send to client
+// url to receive webhooks and send to client
 app.post('/webhooks', function(req, res) {
     if (agents[req.body.agent.telephony_id] !== undefined) {
         io.sockets.in(req.body.agent.telephony_id).emit('event', req.body);
